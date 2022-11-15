@@ -38,15 +38,22 @@ import csv
 import os
 
 file_to_load = os.path.join("Resources", "election_results.csv")
-print(file_to_load)
+# print(file_to_load)
 file_to_save = os.path.join("analysis", "election_analysis.txt")
 # 1. Initialize a total vote counter.
 total_votes = 0
 candidates_options = []
+# empty list
+counties = []
 # 1. Declare the empty dictionary.
 candidate_votes = {}
 # Winning Candidate and Winning Count Tracker
+#create an empty dictionary
+county_names_votescastforeach = {}
 winning_candidate = ""
+#Initialize an empty string, like winning_candidate, that will hold the county name for the county with the largest turnout.
+largest_county_turnout = ""
+largest_county_numberofvotes = 0
 winning_count = 0
 winning_percentage = 0
 with open(file_to_load) as election_data:
@@ -57,7 +64,7 @@ with open(file_to_load) as election_data:
     #     print(row[0])
 
     headers = next(file_reader)
-    print(headers)
+    # print(headers)
     for row in file_reader:
         # 2. Add to the total vote count.
         total_votes += 1
@@ -72,6 +79,14 @@ with open(file_to_load) as election_data:
             candidate_votes[candidate_name] = 0
         candidate_votes[candidate_name] += 1
         # Save the results to our text file.
+        #While reading the election results from each row inside the for loop, write a script that gets the county name from each row.
+        county_name = row[1]
+        #Write a decision statement with a logical operator to check if the county name acquired in Step 3 is in the county list you created in Step 1.
+        if county_name not in counties:
+            counties.append(county_name)
+            county_names_votescastforeach [county_name] = 0
+        #Write a script that adds a vote to the county’s vote count as you are looping through all the rows, like you did for the candidate’s vote count.
+        county_names_votescastforeach[county_name] += 1
 with open(file_to_save, "w") as txt_file:
     # Print the final vote count to the terminal.
     election_results = (
@@ -84,6 +99,28 @@ with open(file_to_save, "w") as txt_file:
     txt_file.write(election_results)
     # Print the candidate vote dictionary.
     # Determine the percentage of votes for each candidate by looping through the counts.
+    for county_name in county_names_votescastforeach:
+        c_votes = county_names_votescastforeach[county_name]
+        c_vote_percentage = float(c_votes) / float(total_votes)* 100
+        county_results = (f"{county_name}: {c_vote_percentage:.1f}% ({c_votes:,})\n")
+        print(county_results)
+        txt_file.write(county_results)
+
+        if (c_votes > largest_county_numberofvotes):
+            # 2. If true then set winning_count = votes and winning_percent =
+            # vote_percentage.
+            largest_county_numberofvotes = c_votes
+            
+            # 3. Set the winning_candidate equal to the candidate's name.
+            largest_county_turnout = county_name
+
+    winning_county_summary = (
+    f"-------------------------\n"
+    f"Largest County Turnout: {largest_county_turnout}\n"
+    f"-------------------------\n")
+    print(winning_county_summary)
+    # Save the winning candidate's name to the text file.
+    txt_file.write(winning_county_summary)
     # 1. Iterate through the candidate list.
     for candidate_name in candidate_votes:
         # 2. Retrieve vote count of a candidate.
@@ -107,6 +144,7 @@ with open(file_to_save, "w") as txt_file:
             winning_percentage = vote_percentage
             # 3. Set the winning_candidate equal to the candidate's name.
             winning_candidate = candidate_name
+        
     winning_candidate_summary = (
     f"-------------------------\n"
     f"Winner: {winning_candidate}\n"
@@ -116,7 +154,12 @@ with open(file_to_save, "w") as txt_file:
     print(winning_candidate_summary)
     # Save the winning candidate's name to the text file.
     txt_file.write(winning_candidate_summary)
+    
 
+    
+#Write a script that adds a vote to the county’s vote count as you are looping through all the rows, like you did for the candidate’s vote count.
+  
 
-
-
+#Write a repetition statement to get the county from the county dictionary that was created in Step 1.
+   
+   
